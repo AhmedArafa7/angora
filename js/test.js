@@ -1,32 +1,67 @@
-arr = [ 'مَن كانَ يُؤْمِنُ باللَّهِ واليَومِ الآخِرِ فلا يُؤْذِ جارَهُ، ومَن كانَ يُؤْمِنُ باللَّهِ واليَومِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ، ومَن كانَ يُؤْمِنُ باللَّهِ واليَومِ الآخِرِ فَلْيَقُلْ خَيْرًا أوْ لِيَصْمُتْ',
-        'من كانتِ الآخرةُ هَمَّهُ جعلَ اللَّهُ غناهُ في قلبِهِ وجمعَ لَه شملَهُ وأتتهُ الدُّنيا وَهيَ راغمة، ومن كانتِ الدُّنيا همَّهُ جعلَ اللَّهُ فقرَهُ بينَ عينيهِ وفرَّقَ عليهِ شملَهُ، ولم يأتِهِ منَ الدُّنيا إلَّا ما قُدِّرَ لَهُ',
-        'لو كانتِ الدُّنيا تعدلُ عندَ اللهِ جناحَ بعوضةٍ ما سقى كافرًا منها شربةَ ماءٍ',
-        'واللَّهِ ما الدُّنْيا في الآخِرَةِ إلَّا مِثْلُ ما يَجْعَلُ أحَدُكُمْ إصْبَعَهُ هذِه، وأَشارَ يَحْيَى بالسَّبَّابَةِ، في اليَمِّ، فَلْيَنْظُرْ بمَ تَرْجِعُ؟',
-        'لَا يُؤْمِنُ أحَدُكُمْ، حتَّى يُحِبَّ لأخِيهِ ما يُحِبُّ لِنَفْسِهِ',
-        'لا يُؤْمِنُ أحدُكم حتى أكونَ أحبَّ إليه من ولدِهِ، ووالدِهِ، والناسِ أجمعينَ'
-]
-var len = arr.length - 1;
+var bookNameInput = document.getElementById('bookNameInput');
+var bookURLInput = document.getElementById('bookURLInput');
+var tbody = document.getElementById('tbody');
+var booksArr = [];
+var boohnameregex = /[\w]{3,}/
+var bookURLregex = /^https:\/\/[\w]+\.[\w]{2,}/
 
+function add(){
+    bookNameInputvalue = bookNameInput.value;
+    bookURLInputvalue = bookURLInput.value;
 
-
-
-last = 1
-function r(len){
-        current = Math.floor(Math.random()*len);
-        if (current == last){
-                current ++
-        }
-        document.getElementById("hadith").innerText = arr[current];
-        document.getElementsByClassName("hadith")
-        last = current
-        return current
+if (boohnameregex.test(bookNameInputvalue) && bookURLregex.test(bookURLInputvalue)) {
+    
+    localStorage.setItem("bookArr", JSON.stringify({bookNameInputvalue,bookURLInputvalue}));
+    
+    var book = {
+        name: bookNameInputvalue,
+        URL: bookURLInputvalue
+    }
+    booksArr.push(book);
+    
+    displaybooks()
+    clearinputs()
+} else {
+    message1 = ""
+    message2 = ""
+    message1.search()
+    if (!boohnameregex.test(bookNameInputvalue)){
+        message1 = 'book name shoud be at least 3 characters'
+    }
+    if (!bookURLregex.test(bookURLInputvalue)){
+        message2 = 'the URL should start with https:// and have at least 1 characters before the . and at least 2 characters after the.'
+    }
+    alert(message1 + '\n' + '\n' + message2)
+}
 }
 
-r(len)
+var book = {
+    name: bookNameInput,
+    URL: bookURLInput
+}
+booksArr.push(book);
 
-
-
-
-
+function displaybooks(){
     
+    localStorage.setItem("booksArr", JSON.stringify(booksArr));
+    cartona = ``
+    for (var i = 1; i < booksArr.length; i++) {
+    cartona += `<tr>
+                        <th>${i}</th>
+                        <th>${booksArr[i].name}</th>
+                        <th><a href="${booksArr[i].URL}"><button class="border-0 rounded-2 text-light p-2 bg-green-light"> <i class="fa-solid fa-eye"></i> Viste </button></a></th>
+                        <th><button class="border-0 rounded-2 text-light p-2 bg-danger" onclick="deleteElement(${i})"> <i class="fa-solid fa-trash-can"></i> DELETE </button></th>
+                    </tr>`
+    }
+    tbody.innerHTML = cartona;
+}
+    
+function clearinputs(){
+    document.getElementById('bookNameInput').value = "";
+    bookURLInputvalue = ''
+}
 
+function deleteElement(index) {
+    booksArr.splice(index, 1)
+    displaybooks()
+}
